@@ -5,7 +5,7 @@ import com.example.productservice.response.ProductResponse;
 
 public interface IProductService {
 
-    long addProduct(ProductRequest productRequest);
+    long addProduct(ProductRequest request);
 
     ProductResponse getProductById(long id);
 

@@ -7,15 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductResponse {
 
+    private long id;
     private String productName;
-
-    private long productId;
-
-    private long quantity;
-
     private long price;
+    private long quantity;
 }

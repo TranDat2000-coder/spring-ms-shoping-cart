@@ -1,9 +1,9 @@
-package com.example.productservice.config.exception;
+package com.example.productservice.exception;
 
 import lombok.Data;
 
 @Data
-public class ProductServiceCustomException extends RuntimeException{
+public class ProductServiceCustomException extends RuntimeException {
 
     private String errorCode;
 
