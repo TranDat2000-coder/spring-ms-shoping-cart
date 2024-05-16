@@ -15,6 +15,10 @@ import javax.persistence.*;
 @Table(name = "PRODUCTS")
 public class Products {
 
+    private static int age = 10; //biến static
+    private int ages; //Biến non-static
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
