@@ -12,9 +12,9 @@ spring:
 
   jpa:
     hibernate:
-      #      ddl-auto: none
+    #  ddl-auto: none
       ddl-auto: update
-    #      ddl-auto: create
+    #  ddl-auto: create
 
     properties:
       hibernate:
