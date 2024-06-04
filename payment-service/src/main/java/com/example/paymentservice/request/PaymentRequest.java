@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentRequest {
 
-    private long orderId;
+    private Long orderId;
 
-    private long amount;
+    private Long amount;
 
     private String referenceNumber;
 

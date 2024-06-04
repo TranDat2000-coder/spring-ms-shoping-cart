@@ -4,9 +4,11 @@ import com.example.paymentservice.entity.TransactionDetails;
 import com.example.paymentservice.exception.PaymentServiceCustomException;
 import com.example.paymentservice.repository.TransactionDetailsRepository;
 import com.example.paymentservice.request.PaymentRequest;
+import com.example.paymentservice.response.PaymentEvent;
 import com.example.paymentservice.response.PaymentResponse;
 import com.example.paymentservice.service.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,23 +17,32 @@ import java.time.Instant;
 public class PaymentServiceImpl implements IPaymentService {
 
     @Autowired
+    private KafkaTemplate<String, PaymentEvent> kafkaTemplate;
+
+    @Autowired
     private TransactionDetailsRepository transactionDetailsRepository;
 
     @Override
-    public long doPayment(PaymentRequest paymentRequest) {
+    public void doPayment(PaymentRequest paymentRequest) {
 
-        TransactionDetails transactionDetails = TransactionDetails.builder()
-                .paymentDate(Instant.now())
-                .paymentMode(paymentRequest.getPaymentMode())
-                .paymentStatus("SUCCESS")
-                .orderId(paymentRequest.getOrderId())
-                .referenceNumber(paymentRequest.getReferenceNumber())
-                .amount(paymentRequest.getAmount())
-                .build();
+        try{
+            TransactionDetails transactionDetails = TransactionDetails.builder()
+                    .paymentDate(Instant.now())
+                    .paymentMode(paymentRequest.getPaymentMode())
+                    .paymentStatus("SUCCESS")
+                    .orderId(paymentRequest.getOrderId())
+                    .referenceNumber(paymentRequest.getReferenceNumber())
+                    .amount(paymentRequest.getAmount())
+                    .build();
 
-        transactionDetails = transactionDetailsRepository.save(transactionDetails);
+            transactionDetailsRepository.save(transactionDetails);
 
-        return transactionDetails.getId();
+        }catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        PaymentEvent paymentEvent = new PaymentEvent(paymentRequest.getOrderId(), "PaymentProcessed");
+        kafkaTemplate.send("payment-topic", paymentEvent);
     }
 
     @Override

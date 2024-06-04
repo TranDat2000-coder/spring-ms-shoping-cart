@@ -5,7 +5,7 @@ import com.example.paymentservice.response.PaymentResponse;
 
 public interface IPaymentService {
 
-    long doPayment(PaymentRequest paymentRequest);
+    void doPayment(PaymentRequest paymentRequest);
 
     PaymentResponse getPaymentDetailsByOrderId(long id);
 }

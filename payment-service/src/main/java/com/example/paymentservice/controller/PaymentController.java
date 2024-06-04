@@ -9,15 +9,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("payment")
+@RequestMapping("payments")
 public class PaymentController {
 
     @Autowired
     private IPaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<Long> doPayment(@RequestBody PaymentRequest paymentRequest){
-        return new ResponseEntity<>(paymentService.doPayment(paymentRequest), HttpStatus.OK);
+    public ResponseEntity<String> doPayment(@RequestBody PaymentRequest paymentRequest){
+        try {
+            paymentService.doPayment(paymentRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("Payment processed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Payment processing failed");
+        }
     }
 
     @GetMapping
