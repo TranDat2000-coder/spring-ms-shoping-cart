@@ -7,6 +7,8 @@ public interface IOrderService {
 
     void createOrder(OrderRequest orderRequest);
 
+    void cancelOrder(long id);
+
     long placeOrder(OrderRequest orderRequest);
 
     OrderResponse getOrderDetails(long orderId);

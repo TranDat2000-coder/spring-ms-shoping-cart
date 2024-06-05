@@ -1,12 +1,14 @@
 package com.example.orderservice.service.impl;
 
 import com.example.orderservice.entity.Order;
+import com.example.orderservice.exception.OrderServiceCustomException;
 import com.example.orderservice.repository.OrderRepository;
 import com.example.orderservice.request.OrderRequest;
 import com.example.orderservice.response.OrderEvent;
 import com.example.orderservice.response.OrderResponse;
 import com.example.orderservice.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ public class OrderServiceImpl implements IOrderService {
                     .productId(orderRequest.getProductId())
                     .quantity(orderRequest.getQuantity())
                     .orderDate(new Date().toInstant())
-                    .orderStatus("SUCCESS")
+                    .orderStatus("PAYMENT-PROCESS")
                     .amount(orderRequest.getTotalAmount())
                     .build();
 
@@ -41,6 +43,19 @@ public class OrderServiceImpl implements IOrderService {
 
         OrderEvent orderEvent = new OrderEvent(orderRequest.getProductId(), "OrderCreated");
         kafkaTemplate.send("order-topic", orderEvent);
+    }
+
+    @Override
+    public void cancelOrder(long id) {
+        try{
+            Order order = orderRepository.findById(id)
+                    .orElseThrow(() -> new OrderServiceCustomException("Order not exits", "404", HttpStatus.NOT_FOUND.value()));
+            order.setOrderStatus("ORDER-CANCEL");
+
+            orderRepository.save(order);
+        }catch (Exception e){
+            System.out.println("Error cancle: " + e.getMessage());
+        }
     }
 
     @Override
