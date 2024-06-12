@@ -22,3 +22,12 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+      retries: 1
+      properties:
+        [request.timeout.ms]: 1
+
+message:
+  topic:
+    name: order-topic

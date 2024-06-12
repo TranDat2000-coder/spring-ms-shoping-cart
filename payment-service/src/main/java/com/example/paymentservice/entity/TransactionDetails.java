@@ -1,5 +1,6 @@
 package com.example.paymentservice.entity;
 
+import com.example.paymentservice.config.PaymentMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class TransactionDetails {
     private long orderId;
 
     @Column(name = "MODE")
-    private String paymentMode;
+    private PaymentMode paymentMode;
 
     @Column(name = "REFERENCE_NUMBER")
     private String referenceNumber;

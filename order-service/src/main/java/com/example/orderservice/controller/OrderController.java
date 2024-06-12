@@ -18,7 +18,7 @@ public class OrderController {
     private IOrderService orderService;
 
     @PostMapping
-    public ResponseEntity<String> createOrder(@RequestBody OrderRequest orderRequest){
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest){
         try {
             orderService.createOrder(orderRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("Order created successfully");

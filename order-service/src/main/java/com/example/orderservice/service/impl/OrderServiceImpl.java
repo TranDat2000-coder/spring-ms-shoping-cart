@@ -1,5 +1,6 @@
 package com.example.orderservice.service.impl;
 
+import com.example.orderservice.config.PaymentMode;
 import com.example.orderservice.entity.Order;
 import com.example.orderservice.exception.OrderServiceCustomException;
 import com.example.orderservice.repository.OrderRepository;
@@ -8,8 +9,12 @@ import com.example.orderservice.response.OrderEvent;
 import com.example.orderservice.response.OrderResponse;
 import com.example.orderservice.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaProducerException;
+import org.springframework.kafka.core.KafkaSendCallback;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,17 +22,22 @@ import java.util.Date;
 @Service
 public class OrderServiceImpl implements IOrderService {
 
+    @Value(value = "${message.topic.name}")
+    private String topicName;
+
     @Autowired
-    private KafkaTemplate<String, OrderEvent> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private OrderRepository orderRepository;
 
     @Override
-    public void createOrder(OrderRequest orderRequest) {
+    public long createOrder(OrderRequest orderRequest) {
 
+        Order order = null;
+        PaymentMode paymentMode = null;
         try{
-            Order order = Order.builder()
+            order = Order.builder()
                     .productId(orderRequest.getProductId())
                     .quantity(orderRequest.getQuantity())
                     .orderDate(new Date().toInstant())
@@ -41,8 +51,20 @@ public class OrderServiceImpl implements IOrderService {
             System.out.println("Error: " + e.getMessage());
         }
 
-        OrderEvent orderEvent = new OrderEvent(orderRequest.getProductId(), "OrderCreated");
-        kafkaTemplate.send("order-topic", orderEvent);
+        if("1".equals(orderRequest.getPaymentMode())){
+            paymentMode = PaymentMode.PAYMENT_ON_DELIVERY;
+        }else if("2".equals(orderRequest.getPaymentMode())){
+            paymentMode = PaymentMode.PAYMENT_VIA_CARD;
+        }else {
+            paymentMode = PaymentMode.PAYMENT_VIA_VNPAY_WALLET;
+        }
+
+        OrderEvent orderEvent = new OrderEvent(order.getId(), paymentMode,"OrderCreated");
+        kafkaTemplate.send(topicName, orderEvent);
+
+        assert order != null;
+
+        return order.getId();
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.example.orderservice.response.OrderResponse;
 
 public interface IOrderService {
 
-    void createOrder(OrderRequest orderRequest);
+    long createOrder(OrderRequest orderRequest);
 
     void cancelOrder(long id);
 

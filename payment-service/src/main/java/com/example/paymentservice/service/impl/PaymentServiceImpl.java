@@ -27,11 +27,11 @@ public class PaymentServiceImpl implements IPaymentService {
 
         try{
             TransactionDetails transactionDetails = TransactionDetails.builder()
-                    .paymentDate(Instant.now())
-                    .paymentMode(paymentRequest.getPaymentMode())
-                    .paymentStatus("PAYMENT-PROCESS")
                     .orderId(paymentRequest.getOrderId())
+                    .paymentMode(paymentRequest.getPaymentMode())
                     .referenceNumber(paymentRequest.getReferenceNumber())
+                    .paymentDate(Instant.now())
+                    .paymentStatus("PAYMENT-PROCESS")
                     .amount(paymentRequest.getAmount())
                     .build();
 

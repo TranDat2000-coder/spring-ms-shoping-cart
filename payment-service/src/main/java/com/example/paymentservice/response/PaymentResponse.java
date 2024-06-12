@@ -1,5 +1,6 @@
 package com.example.paymentservice.response;
 
+import com.example.paymentservice.config.PaymentMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class PaymentResponse {
 
     private String status;
 
-    private String paymentMode;
+    private PaymentMode paymentMode;
 
     private long amount;
 

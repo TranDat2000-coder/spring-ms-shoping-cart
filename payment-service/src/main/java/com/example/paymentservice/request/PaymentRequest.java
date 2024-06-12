@@ -1,5 +1,6 @@
 package com.example.paymentservice.request;
 
+import com.example.paymentservice.config.PaymentMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,5 @@ public class PaymentRequest {
 
     private String referenceNumber;
 
-    private String paymentMode;
+    private PaymentMode paymentMode;
 }
